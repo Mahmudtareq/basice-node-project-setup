@@ -1,27 +1,31 @@
+/* eslint-disable no-unused-vars */
+import { Model } from 'mongoose';
+
 // 1. Create an interface representing a document in MongoDB.
-export type Guardian = {
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
-  fatcherContactNo: string;
+  fatherContactNo: string;
   motherName: string;
   motherOccupation: string;
   motherContactNo: string;
 };
-export type UserName = {
+export type TUserName = {
   firstName: string;
   lastName: string;
   middleName: string;
 };
-export type LocalGuardian = {
+export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
-  adress: string;
+  address: string;
 };
-export type Student = {
+export type TStudent = {
   id: string;
-  name: UserName;
-  gender: 'male' | 'female';
+  password: string;
+  name: TUserName;
+  gender: 'male' | 'female' | 'others';
   dateofBrith: string;
   email: string;
   avatar?: string;
@@ -30,8 +34,20 @@ export type Student = {
   bloodGroup?: 'A+' | 'B+' | 'AB+' | 'O+' | 'A-' | 'B-' | 'AB-' | 'O-';
   presentAddress: string;
   permanentAddress?: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImage?: string;
-  isActive: 'active' | 'inActive';
+  isActive: 'active' | 'blocked';
+  isDeleted: boolean;
 };
+
+export type StudentMethods = {
+  isUserExists(id: string): Promise<TStudent | null>;
+};
+
+// Create a new Model type that knows about IUserMethods...
+export type StudentModel = Model<
+  TStudent,
+  Record<string, never>,
+  StudentMethods
+>;
