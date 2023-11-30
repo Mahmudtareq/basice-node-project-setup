@@ -9,8 +9,6 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 // 2nd step Schema
 // subschema
@@ -73,7 +71,13 @@ const LocalGuardianSchema = new Schema<TLocalGuardian>({
 });
 const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User id is requird'],
+    unique: true,
+    ref: 'User',
+  },
+ 
   name: { type: UserNameSchema, required: true },
   gender: {
     type: String,
@@ -96,11 +100,6 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   guardian: { type: UserGuardianSchema, required: true },
   localGuardian: { type: LocalGuardianSchema, required: true },
   profileImage: { type: String },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
-  },
   isDeleted: {
     type: Boolean,
     default: false,
@@ -113,16 +112,7 @@ studentSchema.methods.isUserExists = async function (id: string) {
 };
 
 // middelware
-// password hash
-studentSchema.pre('save', async function (next) {
-  const user = this;
-  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt));
-  next();
-});
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
+
 
 // Query Middleware
 studentSchema.pre('find', function (next) {
