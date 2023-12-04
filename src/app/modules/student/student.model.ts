@@ -10,6 +10,7 @@ import {
   TUserName,
 } from './student.interface';
 
+
 // 2nd step Schema
 // subschema
 const UserNameSchema = new Schema<TUserName>({
@@ -87,7 +88,7 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
     },
     required: true,
   },
-  dateofBrith: { type: String },
+  dateofBrith: { type: Date },
   email: { type: String, required: true, unique: true },
   contactNo: { type: String, required: true },
   emergencyContact: { type: String, required: true },
@@ -99,6 +100,10 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   permanentAddress: { type: String, required: true },
   guardian: { type: UserGuardianSchema, required: true },
   localGuardian: { type: LocalGuardianSchema, required: true },
+  admissionSemester: {
+    type: Schema.Types.ObjectId,
+    ref:'AcademicSemester'
+  },
   profileImage: { type: String },
   isDeleted: {
     type: Boolean,
